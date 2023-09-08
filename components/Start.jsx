@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   View,
   Text,
@@ -8,12 +9,27 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { getAuth, signInAnonymously } from "firebase/auth";
+
+
 const Start = ({ navigation }) => {
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#090C08");
 
   const handleStartChat = () => {
-    navigation.navigate("Chat", { name, selectedColor });
+    const auth = getAuth();
+    
+    signInAnonymously(auth)
+      .then((userCredential) => {
+
+        const user = userCredential.user;
+        const userId = user.uid;
+  
+        navigation.navigate("Chat", { userId, name, selectedColor });
+      })
+      .catch((error) => {
+        console.error("Error signing in anonymously:", error);
+      });
   };
 
   const colorOptions = ["#b3dcff", "#b3ffdf", "#f6ffb3", "#ffb3b3"];
