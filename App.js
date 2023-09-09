@@ -14,9 +14,9 @@ const App = () => {
     projectId: "letstalk-9a4aa",
     storageBucket: "letstalk-9a4aa.appspot.com",
     messagingSenderId: "1089053181791",
-    appId: "1:1089053181791:web:b30e4276b2bfe7b94b58ea"
+    appId: "1:1089053181791:web:b30e4276b2bfe7b94b58ea",
   };
-  
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -29,18 +29,25 @@ const App = () => {
           options={{ headerShown: false }}
         ></Stack.Screen>
 
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Chat"
           component={Chat}
-          initialParams={{ db }}
+          // initialParams={{ db }}
           options={({ route }) => ({ title: route.params.name })}
         >
-          {/* {(props) => <Chat db={db} {...props} />} */}
-        </Stack.Screen>
+          {(props) => <Chat db={db} {...props} />}
+        </Stack.Screen> */}
+
+        <Stack.Screen
+          name="Chat"
+          options={({ route }) => ({ title: route.params.name })}
+          component={({ navigation, route }) => {
+            return <Chat db={db} navigation={navigation} route={route} />;
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
 
 export default App;

@@ -5,7 +5,7 @@ import { onSnapshot, query, orderBy } from "firebase/firestore";
 import { addDoc, collection } from "firebase/firestore";
 
 const Chat = ({ route, navigation, db }) => {
-  const { name, selectedColor } = route.params;
+  const { name, selectedColor, userId } = route.params;
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Chat = ({ route, navigation, db }) => {
     };
   }, []);
 
-  const onSend = (newMessages) => {
+  const onSend = async (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
   };
 
@@ -66,6 +66,8 @@ const Chat = ({ route, navigation, db }) => {
         user={{
           _id: route.params.userId,
           name: route.params.name,
+          // _id: userID,
+          // name
         }}
       />
     </View>
