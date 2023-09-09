@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import {useState} from "react";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 import {
@@ -10,17 +10,21 @@ import {
   StyleSheet,
 } from "react-native";
 
+
+
 const Start = ({ navigation }) => {
   const auth = getAuth();
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#090C08");
 
   const handleStartChat = () => {
+    
     signInAnonymously(auth)
       .then((userCredential) => {
+
         const user = userCredential.user;
         const userId = user.uid;
-
+  
         navigation.navigate("Chat", { userId, name, selectedColor });
       })
       .catch((error) => {

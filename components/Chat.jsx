@@ -66,8 +66,6 @@ const Chat = ({ route, navigation, db }) => {
         user={{
           _id: route.params.userId,
           name: route.params.name,
-          // _id: userID,
-          // name
         }}
       />
     </View>
