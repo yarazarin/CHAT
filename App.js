@@ -8,9 +8,11 @@ import { getFirestore } from "firebase/firestore";
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
+// Initialize Stack Navigator
 const Stack = createStackNavigator();
 
 const App = () => {
+  // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyBUz9V1bMM41IbuBzFjhz-b5eucUUl-2t0",
     authDomain: "letstalk-9a4aa.firebaseapp.com",
@@ -20,6 +22,7 @@ const App = () => {
     appId: "1:1089053181791:web:b30e4276b2bfe7b94b58ea",
   };
 
+  // Initialize Firebase app
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 

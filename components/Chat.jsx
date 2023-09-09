@@ -8,9 +8,12 @@ const Chat = ({ route, navigation, db }) => {
   const { name, selectedColor, userId } = route.params;
   const [messages, setMessages] = useState([]);
 
+  // Set chat title
   useEffect(() => {
     navigation.setOptions({ title: name });
     const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+    // Listen for new messages
     const unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];
       docs.forEach((doc) => {
@@ -27,6 +30,7 @@ const Chat = ({ route, navigation, db }) => {
     };
   }, []);
 
+  // Function to send a new message
   const onSend = async (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
   };
