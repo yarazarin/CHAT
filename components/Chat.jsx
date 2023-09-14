@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Platform,
+  KeyboardAvoidingView,
+  Alert,
+} from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { onSnapshot, query, orderBy } from "firebase/firestore";
 import { addDoc, collection } from "firebase/firestore";
@@ -35,6 +41,20 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       };
     } else {
       // Load cached messages from AsyncStorage when offline
+      Alert.alert(
+        "You are offline",
+        "Please check your internet connection.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              console.log("OK");
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+
       AsyncStorage.getItem("chat_messages")
         .then((cachedMessages) => {
           if (cachedMessages) {

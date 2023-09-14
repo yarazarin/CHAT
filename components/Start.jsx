@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { getAuth, signInAnonymously } from "firebase/auth";
-
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +6,9 @@ import {
   TouchableOpacity,
   ImageBackground,
   StyleSheet,
+  Alert,
 } from "react-native";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const Start = ({ navigation }) => {
   const auth = getAuth();
@@ -22,7 +22,20 @@ const Start = ({ navigation }) => {
         const user = userCredential.user;
         const userId = user.uid;
 
-        navigation.navigate("Chat", { userId, name, selectedColor });
+        // Show success alert
+        Alert.alert(
+          "Success",
+          "You are logged in anonymously.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                navigation.navigate("Chat", { userId, name, selectedColor });
+              },
+            },
+          ],
+          { cancelable: false }
+        );
       })
       .catch((error) => {
         console.error("Error signing in anonymously:", error);
