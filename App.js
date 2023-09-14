@@ -35,15 +35,6 @@ const App = () => {
           options={{ headerShown: false }}
         ></Stack.Screen>
 
-        {/* <Stack.Screen
-          name="Chat"
-          component={Chat}
-          // initialParams={{ db }}
-          options={({ route }) => ({ title: route.params.name })}
-        >
-          {(props) => <Chat db={db} {...props} />}
-        </Stack.Screen> */}
-
         <Stack.Screen
           name="Chat"
           options={({ route }) => ({ title: route.params.name })}
