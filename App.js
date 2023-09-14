@@ -5,6 +5,9 @@ import Chat from "./components/Chat";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+import { useNetInfo } from "@react-native-community/netinfo";
+
+
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
@@ -12,6 +15,11 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 const Stack = createStackNavigator();
 
 const App = () => {
+
+  const netInfo = useNetInfo();
+  const isConnected = netInfo.isConnected;
+
+
   // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyBUz9V1bMM41IbuBzFjhz-b5eucUUl-2t0",
@@ -40,7 +48,7 @@ const App = () => {
           options={({ route }) => ({ title: route.params.name })}
         >
           {({ navigation, route }) => (
-            <Chat db={db} navigation={navigation} route={route} />
+            <Chat db={db} navigation={navigation} route={route} isConnected={isConnected} />
           )}
         </Stack.Screen>
       </Stack.Navigator>
