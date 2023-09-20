@@ -10,8 +10,12 @@ import {
 } from "react-native";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
+// Define the Start component
 const Start = ({ navigation }) => {
+  // Initialize Firebase authentication
   const auth = getAuth();
+
+  // State for user's name and selected chat color
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#090C08");
 

@@ -4,16 +4,19 @@ import Start from "./components/Start";
 import Chat from "./components/Chat";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 import { useNetInfo } from "@react-native-community/netinfo";
 
-import { LogBox } from "react-native";
+// Ignore a specific log message
+import { LogBox, View } from "react-native";
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 // Initialize Stack Navigator
 const Stack = createStackNavigator();
 
 const App = () => {
+  // Check network connectivity
   const netInfo = useNetInfo();
   const isConnected = netInfo.isConnected;
 
@@ -30,6 +33,7 @@ const App = () => {
   // Initialize Firebase app
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   return (
     <NavigationContainer>
@@ -37,19 +41,21 @@ const App = () => {
         <Stack.Screen
           name="Start"
           component={Start}
-          options={{ headerShown: false }}
+          options={{ headerShown: false }} // Hide the header for this screen
         ></Stack.Screen>
 
         <Stack.Screen
           name="Chat"
           options={({ route }) => ({ title: route.params.name })}
         >
-          {({ navigation, route }) => (
+          {/* Pass props to the "Chat" component */}
+          {(props) => (
             <Chat
-              db={db}
-              navigation={navigation}
-              route={route}
               isConnected={isConnected}
+              db={db}
+              storage={storage}
+              navigation={props.navigation}
+              route={props.route}
             />
           )}
         </Stack.Screen>

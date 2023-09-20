@@ -10,17 +10,22 @@ import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { onSnapshot, query, orderBy } from "firebase/firestore";
 import { addDoc, collection } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView from "react-native-maps";
+import CustomActions from "./CustomActions";
 
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
+  // Extract parameters from the route
   const { name, selectedColor, userId } = route.params;
+
+  // State to manage chat messages
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     navigation.setOptions({ title: name });
 
     if (isConnected) {
+      // Query messages from Firestore and set in state
       const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
-
       const unsubMessages = onSnapshot(q, (docs) => {
         let newMessages = [];
         docs.forEach((doc) => {
@@ -67,11 +72,14 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     }
   }, [isConnected]);
 
+  // Function to handle sending new messages
   const onSend = async (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
   };
 
+  // Custom rendering of chat bubbles
   const renderBubble = (props) => {
+    // Customize bubble styles
     return (
       <Bubble
         {...props}
@@ -90,32 +98,60 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     );
   };
 
-  // Render InputToolbar based on network connectivity
+  // Render the input toolbar based on connectivity
   const renderInputToolbar = (props) => {
     if (isConnected) return <InputToolbar {...props} />;
     else return null;
   };
 
-  return (
-    <View style={[styles.container, { backgroundColor: selectedColor }]}>
-      {Platform.OS === "android" ? (
-        <KeyboardAvoidingView behavior="height" />
-      ) : null}
-      {Platform.OS === "ios" ? (
-        <KeyboardAvoidingView behavior="padding" />
-      ) : null}
+  // Custom rendering of actions (e.g., attachments) in the input toolbar
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} {...props} />;
+  };
 
-      <GiftedChat
-        messages={messages}
-        renderBubble={renderBubble}
-        renderInputToolbar={renderInputToolbar}
-        onSend={(newMessages) => onSend(newMessages)}
-        user={{
-          _id: route.params.userId,
-          name: route.params.name,
-        }}
-      />
-    </View>
+  // Custom rendering of location messages
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  };
+
+  return (
+    <>
+      <View style={[styles.container, { backgroundColor: selectedColor }]}>
+        {Platform.OS === "android" ? (
+          <KeyboardAvoidingView behavior="height" />
+        ) : null}
+        {Platform.OS === "ios" ? (
+          <KeyboardAvoidingView behavior="padding" />
+        ) : null}
+
+        <GiftedChat
+          messages={messages}
+          renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
+          onSend={(newMessages) => onSend(newMessages)}
+          renderActions={renderCustomActions}
+          renderCustomView={renderCustomView}
+          user={{
+            _id: userId,
+            name: name,
+          }}
+        ></GiftedChat>
+      </View>
+    </>
   );
 };
 
